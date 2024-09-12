@@ -1,0 +1,20 @@
+<h1>プロフィール</h1>
+
+<span><%= link_to 'アカウント', account_path %></span>
+<span><%= link_to 'プロフィール', profile_path %></span>
+
+<%= image_tag(@user.icon_image.attached? ? @user.icon_image : 'default_icon.png', alt: 'User Icon', class: 'user-icon') %>
+
+<p>
+  <strong>ユーザー名:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>紹介文:</strong>
+  <%= @user.introduction.present? ? @user.introduction : '' %>
+</p>
+
+
+<p><%= link_to '編集', edit_profile_path %></p>
+

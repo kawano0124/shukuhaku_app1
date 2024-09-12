@@ -1,0 +1,39 @@
+<h3>施設一覧</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>画像</th>
+      <th>施設名</th>
+      <th>住所</th>
+      <th>施設紹介</th>
+      <th>料金</th>
+      <th>作成日</th>
+      <th>削除</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rooms.each do |room| %>
+      <tr>
+        <td>
+          <% if room.image.attached? %>
+             <%= image_tag room.image,  width: "200", height: "100" %>
+          <% else %>
+            <%= image_tag asset_path("default_shisetu.png"),  width: "200", height: "100" %>
+          <% end %>
+        </td>
+        <td><%= link_to room.room_name, room_path(room) %></td>
+        <td><%= room.room_address %></td>
+        <td><%= room.room_introduction %></td>
+        <td><%= room.room_price %></td>
+        <td><%= room.created_at.to_s(:datetime_jp) %></td>
+        <td>
+          <%= button_to "削除",  room, method: :delete, data: { confirm: "本当に削除しますか？" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to "施設新規登録", new_room_path %></p>

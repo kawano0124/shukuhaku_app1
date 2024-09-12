@@ -11,6 +11,27 @@
   </head>
 
   <body>
+   <header>
+    <h1><%= link_to 'Potepan Share', '/shukuhaku/yoyaku' %></h1>
+
+    <nav>
+     <ul>
+      <% if user_signed_in? %>
+        <li><%= link_to '施設の新規登録', new_room_path %></li>
+        <li><%= link_to '登録済の施設一覧', rooms_path %></li>
+        <li><%= link_to 'アカウント設定', account_path %></li>
+        <li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
+       <% else %>
+        <li><%= link_to 'ログイン', new_user_session_path %></li>
+        <li><%= link_to '新規登録', new_user_registration_path %></li>
+      <% end %>
+     </ul>
+    </nav>
+   </header>
+
     <%= yield %>
+   <footer>
+    <h1>Potepan Share</h1>
+   </footer>
   </body>
 </html>
