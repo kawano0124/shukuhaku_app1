@@ -1,35 +1,55 @@
-<table> 
-  <tr>
-     <th>画像</th> 
-     <td>
-       <% if @room.image.attached? %>
-       <%= image_tag @room.image,  width: "200", height: "100" %>
-      <% else %>
-       <%= image_tag asset_path("default_shisetu.png"),  width: "200", height: "100" %>
-     <% end %>
-    </td>
-  </tr>
-  <tr>
-     <th>施設名</th>
-     <td><%= @room.room_name %></td>
-  </tr>
-  <tr>
-     <th>住所</th>
-     <td><%= @room.room_address %></td>
-  </tr>
-  <tr>
-     <th>施設紹介</th>
-     <td><%= @room.room_introduction %></td>
-  </tr>
-  <tr>
-     <th>料金</th>
-     <td><%= @room.room_price %></td>
-  </tr>
-  <tr>
-     <th>作成日</th>
-     <td><%= @room.created_at.to_s(:datetime_jp) %></td>
-  </tr>
-</table>
+<h1><%= @room.room_name %></h1>
 
-<p><%= link_to '編集', edit_room_path(@room) %></p>
+<p>
+  <strong>住所:</strong>
+  <%= @room.room_address %>
+</p>
+
+<p>
+  <strong>施設紹介:</strong>
+  <%= @room.room_introduction %>
+</p>
+
+<p>
+  <strong>料金:</strong>
+  <%= number_to_currency(@room.room_price, unit: "¥") %>
+</p>
+
+<p>
+  <% if @room.image.attached? %>
+    <%= image_tag @room.image, width: "200", height: "100" %>
+  <% else %>
+    <%= image_tag asset_path("default_shisetu.png"), width: "200", height: "100" %>
+  <% end %>
+</p>
+
+<h2>予約フォーム</h2>
+
+<%= form_with model: [@room, @reservation], local: true do |f| %>
+  <%= f.hidden_field :room_id, value: @room.id %>
+
+  <div class="form-group">
+    <%= f.label :check_in_date, "チェックイン日", class: "required" %>
+    <%= f.date_field :check_in_date %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :check_out_date, "チェックアウト日", class: "required" %>
+    <%= f.date_field :check_out_date %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :number_of_people, "人数", class: "required" %>
+    <%= f.number_field :number_of_people, min: 1 %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "予約する" %>
+  </div>
+<% end %>
+
+<% if current_user == @room.user %>
+  <!-- 編集ボタン -->
+  <%= link_to '編集', edit_room_path(@room), class: 'btn btn-primary' %>
+<% end %>
 <p><%= link_to '戻る', request.referer || rooms_path %></p>

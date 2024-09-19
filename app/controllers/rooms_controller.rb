@@ -1,14 +1,23 @@
 class RoomsController < ApplicationController
+  before_action :authenticate_user!, except: [:search, :index, :show] 
+
   def new
     @room = Room.new
   end
 
-  def index
-    @rooms = Room.all
+  def search
+    @q = Room.ransack(params[:q])
+    @results = @q.result
+    @total_count = @results.count
   end
-  
+
+  def index
+    @q = Room.ransack(params[:q])  
+    @rooms = @q.result
+  end
+
   def create
-    @room = Room.new(room_params)
+    @room = current_user.rooms.build(room_params)
     if @room.save
       redirect_to rooms_path, notice: "施設が作成されました"
     else
@@ -18,6 +27,7 @@ class RoomsController < ApplicationController
 
   def show
     @room = Room.find(params[:id])
+    @reservation = @room.reservations.build
   end
 
   def edit
@@ -26,11 +36,11 @@ class RoomsController < ApplicationController
 
   def update
     @room = Room.find(params[:id])
-    if @room.update(params.require(:room).permit(:room_name, :room_introduction, :room_price, :room_address, :image))
-       flash[:notice] = "施設情報を更新しました"
-       redirect_to :users
-      else
-       render "edit"
+    if @room.update(room_params)
+      flash[:notice] = "施設情報を更新しました"
+      redirect_to room_path(@room)
+    else
+      render :edit
     end
   end
 
@@ -38,11 +48,10 @@ class RoomsController < ApplicationController
     @room = Room.find(params[:id])
     @room.destroy
     flash[:notice] = "施設を削除しました"
-    redirect_to :rooms
+    redirect_to rooms_path
   end
 
   def room_params
     params.require(:room).permit(:room_name, :room_introduction, :room_price, :room_address, :image)
   end
-
 end

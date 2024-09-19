@@ -5,29 +5,76 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <style>
+      /* ドロップダウンメニューのスタイル */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+      }
+
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      .dropdown-content a:hover {background-color: #f1f1f1}
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      .dropdown:hover .dropbtn {
+        background-color: #3e8e41;
+      }
+    </style>
   </head>
 
   <body>
    <header>
-    <h1><%= link_to 'Potepan Share', '/shukuhaku/yoyaku' %></h1>
+    <div class="header-container">
+      <h1><%= link_to 'Potepan Share', '/shukuhaku/yoyaku' %></h1>
 
-    <nav>
-     <ul>
-      <% if user_signed_in? %>
-        <li><%= link_to '施設の新規登録', new_room_path %></li>
-        <li><%= link_to '登録済の施設一覧', rooms_path %></li>
-        <li><%= link_to 'アカウント設定', account_path %></li>
-        <li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
-       <% else %>
-        <li><%= link_to 'ログイン', new_user_session_path %></li>
-        <li><%= link_to '新規登録', new_user_registration_path %></li>
-      <% end %>
-     </ul>
-    </nav>
-   </header>
+      <nav>
+        <ul>
+          <% if user_signed_in? %>
+            <li class="dropdown">
+              <% if current_user.icon_image.attached? %>
+                <%= image_tag current_user.icon_image, class: 'user-icon' %>
+              <% else %>
+                <%= image_tag 'default_icon.png', class: 'user-icon' %>
+              <% end %>
+              <a href="#" class="dropbtn">
+                <%= current_user.name %>
+              </a>
+              <div class="dropdown-content">
+                <%= link_to '予約一覧', reservations_path %>
+                <%= link_to '施設の新規登録', new_room_path %>
+                <%= link_to '登録済の施設一覧', rooms_path %>
+                <%= link_to 'アカウント設定', account_path %>
+                <%= link_to 'ログアウト', destroy_user_session_path, method: :delete %>
+              </div>
+            </li>
+         <% else %>
+           <li><%= link_to 'ログイン', new_user_session_path %></li>
+           <li><%= link_to '新規登録', new_user_registration_path %></li>
+         <% end %>
+       </ul>
+      </nav>
+    </div>
+  </header>
 
     <%= yield %>
    <footer>

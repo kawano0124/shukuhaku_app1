@@ -1,5 +1,20 @@
 Rails.application.routes.draw do
-  resources :rooms
+  # 部屋に関連した予約のルート
+  resources :rooms do
+    collection do
+      get 'search'  # 検索機能
+    end
+  
+    resources :reservations, only: [:new, :create] do
+      collection do
+        get 'confirm'   # 確認ページ表示用
+        post 'confirm'  # 予約確定処理用
+      end
+    end
+  end
+
+  # 予約一覧を追加
+  resources :reservations, only: [:index]
 
   # Deviseルートとカスタムコントローラの設定
   devise_for :users, controllers: {
