@@ -1,0 +1,40 @@
+<h3>予約一覧</h3>
+
+<% if @reservations.any? %> <!-- ここで予約が存在するかをチェック -->
+  <table>
+    <thead>
+      <tr>
+        <th>画像</th>
+        <th>施設名</th>
+        <th>施設紹介</th>
+        <th>合計料金</th>
+        <th>宿泊人数</th>
+        <th>チェックイン</th>
+        <th>チェックアウト</th>
+        <th>予約確定日時</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reservations.each do |reservation| %>
+        <tr>
+          <td>
+            <% if reservation.room.image.attached? %>
+              <%= image_tag reservation.room.image, width: "200", height: "100" %>
+            <% else %>
+              <%= image_tag asset_path("default_shisetu.png"), width: "200", height: "100" %>
+            <% end %>
+          </td>
+          <td><%= link_to reservation.room.room_name, room_path(reservation.room) %></td>
+          <td><%= reservation.room.room_introduction %></td>
+          <td><%= number_to_currency(reservation.total_price, unit: "¥") %></td>
+          <td><%= reservation.number_of_people %> 人</td>
+          <td><%= reservation.check_in_date %></td>
+          <td><%= reservation.check_out_date %></td>
+          <td><%= reservation.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %> <!-- 予約が存在しない場合のメッセージ -->
+  <p>まだ予約が登録されていません。</p>
+<% end %>

@@ -1,0 +1,47 @@
+<p>施設数: <%= @total_count %></p>
+
+<%= search_form_for @q, url: search_rooms_path do |f| %>
+  <%= f.label :room_address_cont, 'エリア' %>
+  <%= f.search_field :room_address_cont %>
+  <%= f.submit '検索' %>
+<% end %>
+
+<%= search_form_for @q, url: search_rooms_path, method: :get do |f| %>
+  <div class="field">
+    <%= f.label :name_or_details_cont, 'フリーワード' %>
+    <%= f.search_field :room_name_or_room_introduction_or_room_address_cont, placeholder: "施設名または詳細" %>
+    <%= f.submit '検索' %>
+  </div>
+<% end %>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>画像</th>
+      <th>施設名</th>
+      <th>住所</th>
+      <th>施設紹介</th>
+      <th>料金</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <% @results.each do |result| %>
+    <tr>
+      <td>
+        <% if result.image.attached? %>
+          <%= image_tag result.image, width: "200", height: "100" %>
+        <% else %>
+          <%= image_tag asset_path("default_shisetu.png"), width: "200", height: "100" %>
+        <% end %>
+      </td>
+      <td><%= link_to result.room_name, room_path(result) %></td>
+      <td><%= result.room_address %></td>
+      <td><%= result.room_introduction %></td>
+      <td><%= result.room_price %></td>
+    </tr>
+  <% end %>
+</tbody>
+</table>
+

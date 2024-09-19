@@ -1,0 +1,37 @@
+<h1>予約確認</h1>
+
+<p>
+  <strong>チェックイン日:</strong>
+  <%= @reservation.check_in_date %>
+</p>
+
+<p>
+  <strong>チェックアウト日:</strong>
+  <%= @reservation.check_out_date %>
+</p>
+
+<p>
+  <strong>宿泊日数:</strong>
+  <%= @reservation.stay_duration %> 日
+</p>
+
+<p>
+  <strong>人数:</strong>
+  <%= @reservation.number_of_people %>
+</p>
+
+<p>
+  <strong>合計金額:</strong>
+  <% if @reservation.total_price.present? %>
+    <%= number_to_currency(@reservation.total_price, unit: "¥") %>
+  <% else %>
+    計算できませんでした
+  <% end %>
+</p>
+
+<%= form_with url: confirm_room_reservations_path(@room), method: :post do %>
+  <%= hidden_field_tag :reservation_id, @reservation.id %>
+  <%= submit_tag "予約確定", class: "btn btn-primary" %>
+<% end %>
+
+<%= link_to '戻る', request.referer || rooms_path %>
